@@ -1,8 +1,11 @@
 import React, { useState, useRef } from 'react';
 import CartIcon from '../supermarket.svg';
 import useOnClickOutside from 'use-onclickoutside';
+import { useCart } from '../contexts/use-cart';
 
 const Header = () => {
+  const { cart } = useCart();
+
   const modalRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -14,7 +17,7 @@ const Header = () => {
       <div className="container">
         <div className="cart-button">
           <button onClick={() => setIsOpen((isOpen) => !isOpen)}>
-            <img src={CartIcon} width="30" alt="cart" />({0})
+            <img src={CartIcon} width="30" alt="cart" />({cart.length})
           </button>
           {/* Show Modal */}
           <div
