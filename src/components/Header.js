@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import CartIcon from '../supermarket.svg';
 import useOnClickOutside from 'use-onclickoutside';
 import { useCart } from '../contexts/use-cart';
+import Cart from './Cart';
 
 const Header = () => {
   const { cart } = useCart();
@@ -25,7 +26,7 @@ const Header = () => {
             className="cart-modal"
             style={{ display: isOpen ? 'block' : 'none' }}
           >
-            Cart goes here
+            <Cart />
           </div>
         </div>
       </div>
