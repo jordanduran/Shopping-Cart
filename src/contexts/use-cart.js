@@ -28,7 +28,7 @@ const reducer = (state, action) => {
       return { ...state, cart: newCart };
 
     case 'EMPTY':
-
+      return { cart: [] };
     default:
       return state;
   }
@@ -43,6 +43,8 @@ export const CartProvider = ({ children }) => {
 
   const removeItem = (sku) => dispatch({ type: 'REMOVE', payload: sku });
 
+  const emptyCart = () => dispatch({ type: 'EMPTY' });
+
   const countItemsInCart = (sku) => {
     const itemsInCart =
       state.cart.filter((product) => product.sku === sku) ?? [];
@@ -50,14 +52,37 @@ export const CartProvider = ({ children }) => {
     return itemsInCart.length;
   };
 
-  const totalPrice = () => {};
+  const totalPrice = () => {
+    return groupCartItems().reduce((totalPrice, product) => {
+      return totalPrice + product.price * product.quantity;
+    }, 0);
+  };
+
+  const groupCartItems = () => {
+    return state.cart.reduce((newCart, product) => {
+      // Check the newCart array for a product
+      const indexInCart = newCart.findIndex((p) => p.sku === product.sku);
+      const isInCart = indexInCart !== -1;
+
+      // If it's in the array, increment the quantity
+      if (isInCart) {
+        newCart[indexInCart].quantity = newCart[indexInCart].quantity + 1;
+        return newCart;
+      }
+      // If not in the array, add it to the array
+      newCart.push({ ...product, quantity: 1 });
+      return newCart;
+    }, []);
+  };
 
   return (
     <CartContext.Provider
       value={{
         addItem,
         removeItem,
+        emptyCart,
         cart: state.cart,
+        cartGroupedByItems: groupCartItems(),
         countItemsInCart,
         totalPrice: totalPrice(),
       }}
